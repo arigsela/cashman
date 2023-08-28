@@ -32,9 +32,10 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     
-    - name: Update Minor version
-      uses: hmanzur/actions-set-secret@v2.0.0
+    - name: update minor version
+      uses: gliech/create-github-secret-action@v1
       with:
-        name: 'MINOR'
+        name: MINOR
         value: $((${{ secrets.MINOR }}+1))
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        pa_token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
