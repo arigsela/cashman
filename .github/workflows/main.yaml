@@ -22,23 +22,20 @@ jobs:
     - name: Login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    
-    - name: Docker metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ steps.login-ecr.outputs.registry }}/cashman_app
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}        
 
     - name: Build, tag and push image to ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: cashman_app
-        IMAGE_TAG: ${{ steps.meta.outputs.tags }}
+        IMAGE_TAG: ${{ secrets.MAJOR }}.${{ secrets.MINOR }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    
+    - name: Update Minor version
+      uses: hmanzur/actions-set-secret@v2.0.0
+      with:
+        name: 'MINOR'
+        value: $((${{ secrets.MINOR }}+1))
+        repository: ${{ steps.login-ecr.outputs.registry }}.cashman_app
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
