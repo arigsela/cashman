@@ -39,11 +39,11 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     
-      - name: Increment value
-        uses: yoichiro/gh-action-increment-value@main
-        with:
-          target_directory: /
-          target_file: 'build_number.json'
-          prefix: 'build_number":'
-          suffix: '}'
-          commit_message: 'Increment the build number to '
+    - name: Increment value
+      uses: yoichiro/gh-action-increment-value@main
+      with:
+        target_directory: /
+        target_file: 'build_number.json'
+        prefix: 'build_number":'
+        suffix: '}'
+        commit_message: 'Increment the build number to '
