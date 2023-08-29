@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
