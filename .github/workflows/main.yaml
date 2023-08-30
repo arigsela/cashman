@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR
+name: Merged PR build and push to ECR with commit hash
 
 on:
   pull_request:
