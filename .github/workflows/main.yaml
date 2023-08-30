@@ -13,8 +13,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -27,27 +25,11 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: get specified property
-      id: build_number
-      uses: zoexx/github-action-json-file-properties@release
-      with:
-        file_path: "build_number.json"
-        prop_path: "build_number"
-
     - name: Build, tag and push image to ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: cashman_app
-        IMAGE_TAG: ${{steps.build_number.outputs.value}}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    
-    - name: Increment value
-      uses: yoichiro/gh-action-increment-value@main
-      with:
-        target_directory: /
-        target_file: 'build_number.json'
-        prefix: 'build_number":'
-        suffix: '}'
-        commit_message: 'Increment the build number to '
